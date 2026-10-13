@@ -1,0 +1,113 @@
+NIC Analyzer V1.0.2 · compilación 1.2 · Windows x64
+Dysco Exploration and Production
+Field Tools / cloudLOGGER SCADA
+https://cloudloggerscada.com
+
+INICIO
+Extrae el ZIP y ejecuta NIC-Analyzer.exe. No requiere Python ni carpetas
+externas de iconos. La detección comienza automáticamente; no inicia captura.
+La captura requiere Npcap instalado por separado: https://npcap.com
+Si Npcap tiene activado el modo exclusivo de administrador, ejecuta
+NIC-Analyzer.exe como administrador. No se redistribuye ni instala Npcap.
+
+USO
+1. Selecciona una NIC para ver sus propiedades y su clase física o virtual.
+   Ethernet, Wi-Fi, Bluetooth y celular/GPRS se identifican según la información
+   que proporciona Windows. No hay hardware simulado en el programa.
+   Si Windows restringe el inventario CIM, se usa .NET y se muestra
+   "clase estimada (.NET)"; la clasificación física/virtual será aproximada.
+2. Doble clic sobre una NIC inicia su captura y abre la pestaña Paquetes.
+   Seleccionar "Paquetes" en el árbol solamente abre la vista.
+3. Iniciar general abarca todas las NIC conectadas marcadas como incluidas.
+   Detener general detiene todas las capturas. Guarda la selección por NIC
+   con Guardar interfaz y conserva el proyecto mediante Archivo > Guardar.
+4. Los controles de inicio/detención dentro de una vista abarcan la NIC
+   seleccionada en el árbol. La adquisición pasiva no envía paquetes.
+5. Selecciona un paquete para ver Ethernet, VLAN, IP, transporte y carga útil.
+   Selecciona un bloque para copiarlo al portapapeles. Copiar línea copia
+   hora, nivel, NIC, protocolo, extremos, longitud y resumen.
+   Doble clic sobre un paquete o bloque abre el analizador en pantalla completa.
+   Usa Regresar o Escape para volver.
+6. El campo IP busca por coincidencia parcial en IP origen/destino.
+   Hay filtros TCP, UDP, Modbus TCP, ARP e ICMP/ping.
+   Marca Ocultar DNS/mDNS, Broadcast/multicast o SSDP/DHCP para quitar ruido.
+   "IP del equipo" oculta TODO tráfico con una IP local en cualquiera de los
+   extremos; no identifica procesos ni diferencia tráfico útil de ruido.
+   Quitar filtros recupera todos los paquetes aún retenidos.
+7. Pausar visor congela tabla y detalles; la adquisición sigue en segundo plano.
+   Al reanudar se muestran los datos actuales. Los filtros no eliminan datos.
+8. Exportar guarda los paquetes que coinciden con los filtros en PCAP, CSV
+   o texto decodificado. PCAP contiene los bytes retenidos y puede abrirse
+   con un analizador compatible. Si hay varios tipos de enlace, filtra cada
+   NIC y expórtala por separado. Importar acepta PCAP clásico con marcas
+   de microsegundos; PCAPNG no está admitido en esta versión.
+9. Minimizar conserva la app en la bandeja. Clic izquierdo restaura la ventana.
+   Clic derecho ofrece Abrir/Configurar, Iniciar captura general,
+   Detener captura general y Salir. Ver permite desactivar esa preferencia.
+10. Ayuda > Acerca de muestra identidad, versión y licencia MIT completa.
+
+CAPACIDAD Y LIMITACIONES
+Se retienen hasta 10 000 paquetes en memoria. Al alcanzar el límite se retiran
+los más antiguos y se informa el total descartado. La tabla muestra las últimas
+2 000 coincidencias de más nuevo a más viejo, con el más nuevo arriba; exportar incluye todas las coincidencias retenidas.
+La cola de adquisición está limitada a 5 000 eventos. Bajo tráfico intenso
+puede descartar paquetes adicionales; se suman al contador de descartes.
+No se realiza una captura continua en disco ni una auditoría sin pérdidas.
+Limpiar elimina los paquetes retenidos; la captura continúa si estaba activa.
+El proyecto .nica conserva filtros y NIC incluidas, no los paquetes.
+La captura de NIC virtuales/Bluetooth/celular depende de que Npcap permita
+abrir ese adaptador. No captura Bluetooth HCI ni módems serie directamente.
+Wi-Fi se analiza como tráfico de red entregado por el controlador, sin modo
+monitor 802.11. Loopback usa el dispositivo NPF_Loopback de Npcap.
+Se decodifican Ethernet, VLAN, ARP, IPv4, IPv6 básico, TCP, UDP, ICMP,
+DNS/mDNS básico y cabecera MBAP/función de Modbus TCP cuando están en el paquete.
+No hay reconstrucción TCP, descifrado TLS, fragmentación IP reensamblada ni
+análisis completo de protocolos. IPv6 con extensiones conserva los bytes
+sin interpretar la cabecera de transporte. Los bytes crudos siguen disponibles.
+
+LICENCIAS
+LICENSE.txt contiene la licencia MIT del código propio, cuyo titular es
+Dysco Exploration and Production. THIRD-PARTY-NOTICES.txt integra los textos
+completos de los componentes redistribuidos. Npcap es un requisito externo
+con su propia licencia; MIT no implica respaldo ni afiliación de terceros.
+
+ACTUALIZACIÓN 1.0.1
+Barra superior compacta con iconos y tooltips, como Modbus Audit.
+Seguir contenido mantiene arriba los paquetes más recientes sin cambiar el
+paquete seleccionado para inspección. Desmárcalo para explorar la lista.
+Filtrar IP origen/destino solo busca direcciones IP. Buscar texto en paquetes
+busca contenido decodificado y los bytes completos capturados, sin distinguir
+mayúsculas. Ejemplo: siemens encuentra SIEMENS aunque esté más allá de la
+vista previa o cruce una línea del visor hexadecimal. También admite texto
+UTF-16 ASCII (LE/BE). No descifra TLS ni reconstruye palabras repartidas
+entre varios paquetes; no deduce fabricantes que no aparecen en el contenido.
+Los filtros de IP, texto, protocolo, NIC y ruido se aplican conjuntamente.
+
+ACTUALIZACIÓN 1.0.2: DETECCIÓN DE DIRECCIONES
+En el analizador escribe la palabra (por ejemplo siemens) y marca Detectar IP
+ o Detectar MAC. Solo quedan los paquetes que coinciden con la búsqueda y
+contienen al menos una dirección del tipo elegido. Si marcas ambas opciones,
+se admite IP O MAC. Los filtros anteriores también siguen aplicándose.
+La pestaña IP / MAC detectadas reúne las direcciones de TODOS los paquetes
+que coinciden con los filtros, de más nuevo a más viejo, con hora, NIC, tipo,
+dirección, ubicación y línea completa en la que aparece.
+Por defecto incluye las direcciones de las cabeceras IP y Ethernet, además
+ de las escritas como texto en la carga útil completa (no solo su vista previa).
+Marca Solo contenido para excluir las cabeceras y buscar únicamente las IP/MAC
+escritas dentro del mensaje. La palabra y la dirección pueden estar en líneas
+ distintas del mismo paquete; no se requiere que estén en la misma línea.
+Se valida IPv4/IPv6 y se admiten MAC con dos puntos, guiones o formato Cisco
+0000.0000.0000. Se escanea texto UTF-8 y texto ASCII codificado en UTF-16 LE/BE.
+No se convierten bytes arbitrarios en IP o MAC, ni se descifra tráfico cifrado
+ ni se reconstruyen mensajes que estén divididos entre varios paquetes.
+Las direcciones IP binarias contenidas en protocolos sin decodificador no
+ se deducen automáticamente. Cabeceras IP/Ethernet sí usan sus campos reales.
+Seleccionar una fila copia todos sus datos y la línea al portapapeles;
+Copiar línea también copia la fila seleccionada de la pestaña detectada.
+Doble clic abre el detalle del paquete si está dentro de las 2000 filas
+mostradas en la tabla superior. Puedes volver a la pestaña de detecciones.
+Exportar direcciones guarda CSV con TODAS las coincidencias retenidas;
+la vista inferior muestra hasta 2000 filas e indica cuando alcanza el límite.
+Exportar paquetes conserva su función de exportar los paquetes filtrados.
+Quitar filtros desactiva también la detección. El proyecto guarda búsqueda,
+detección y Solo contenido, y acepta proyectos de versiones anteriores.
