@@ -35,6 +35,20 @@ Escribe `siemens` en **Buscar texto en paquetes** y activa **Detectar IP**, **De
 
 Marca **Solo contenido** para encontrar únicamente direcciones escritas dentro del mensaje. La palabra y la dirección pueden estar en líneas distintas del mismo paquete. Buscar una palabra no identifica automáticamente al fabricante del equipo.
 
+## Prerrequisitos y descargas oficiales
+
+| Componente | Cuándo se necesita | Descarga |
+|---|---|---|
+| **Npcap para Windows** | **Obligatorio para captura en vivo** | [Descargar el instalador oficial de Npcap](https://npcap.com/#download). Selecciona el installer para Windows; no necesitas el SDK. |
+| Controlador de tu NIC | Para que Windows detecte y pueda utilizar la interfaz | Windows o soporte oficial del fabricante de tu PC/NIC. |
+| Python, Wireshark o WinPcap | **No son prerrequisitos de NIC Analyzer** | El portable incluye su runtime; la captura utiliza Npcap. |
+
+Para consultar interfaces o importar y analizar un PCAP guardado no necesitas iniciar una captura ni instalar Npcap. Para capturar, instala Npcap y vuelve a iniciar NIC Analyzer. Si Npcap fue instalado con acceso exclusivo para administradores, ejecuta NIC Analyzer como administrador.
+
+Npcap se obtiene por separado y conserva [sus propias condiciones de licencia](https://npcap.com/#licensing); no viene dentro del ZIP. La instalación no garantiza captura en todos los adaptadores: depende del soporte de la NIC y de su controlador.
+
+[Guía completa de prerrequisitos](docs/prerrequisitos.md)
+
 ## Inicio y requisitos
 
 1. Extrae todo el ZIP y ejecuta `NIC-Analyzer.exe`. No necesitas instalar Python ni copiar iconos externos.
