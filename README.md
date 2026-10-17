@@ -6,9 +6,9 @@
 
 NIC Analyzer es una herramienta de escritorio de **Dysco Exploration and Production**, parte de **Field Tools de cloudLOGGER SCADA**, para identificar interfaces de red, capturar paquetes e inspeccionar su contenido.
 
-**V1.0.2 · compilación 1.2 · Windows x64 · Portable**
+**V1.1.1 · compilación 2.1 · Windows x64 · Portable**
 
-[**Descargar NIC Analyzer para Windows x64**](https://github.com/DyscoEP/nic-analyzer/releases/download/v1.0.2/NIC-Analyzer-V1.0.2-Windows-x64.zip)
+[**Descargar NIC Analyzer para Windows x64**](https://github.com/DyscoEP/nic-analyzer/releases/latest/download/NIC-Analyzer-Windows-x64.zip)
 
 > La aplicación es portable; **la captura requiere [Npcap](https://npcap.com/) instalado por separado**. NIC Analyzer no instala ni redistribuye Npcap. Detectar interfaces o iniciar el programa no inicia una captura automáticamente.
 
@@ -20,10 +20,10 @@ NIC Analyzer es una herramienta de escritorio de **Dysco Exploration and Product
 |---|---|
 | Inventario de interfaces | Propiedades y clasificación física/virtual de las NIC que informa Windows; Ethernet, Wi-Fi, Bluetooth y celular según el adaptador. |
 | Captura | Captura pasiva por NIC o inicio/detención general sobre las NIC conectadas incluidas. |
-| Inspección | Detalles de cabeceras y carga útil, bytes crudos, copia de bloques y vista a pantalla completa. |
-| Filtros | NIC, IP origen/destino, TCP, UDP, Modbus TCP, ARP e ICMP; opciones para ocultar ruido. |
+| Inspección | Detalles de cabeceras y carga útil, bytes crudos, copia de bloques y ventana ampliada independiente con controles de Windows. |
+| Filtros | NIC, IP de cabecera/anunciada y protocolos reconocidos; opciones para ocultar ruido. |
 | Búsqueda de texto | Busca en contenido decodificado y bytes completos del paquete, sin distinguir mayúsculas; admite texto ASCII en UTF-16 LE/BE. |
-| Detección IP/MAC | Extrae direcciones de cabeceras y direcciones escritas en texto dentro del contenido, con su ubicación y línea. Solo contenido excluye cabeceras. |
+| Detección IP/MAC | Extrae direcciones de cabeceras, campos binarios reconocidos y texto dentro del contenido, con su ubicación y línea. Solo contenido excluye cabeceras. |
 | Exportación | Paquetes filtrados a PCAP, CSV o texto decodificado; direcciones detectadas a CSV. |
 | Importación | PCAP clásico con marcas de microsegundos. PCAPNG no está admitido. |
 | Proyectos | Archivos .nica para filtros, selección de NIC y opciones de detección; no guardan paquetes. |
@@ -33,7 +33,7 @@ NIC Analyzer es una herramienta de escritorio de **Dysco Exploration and Product
 
 Escribe `siemens` en **Buscar texto en paquetes** y activa **Detectar IP**, **Detectar MAC** o ambas. La pestaña **IP / MAC detectadas** reúne direcciones de los paquetes que coinciden con los filtros, mostrando hora, NIC, ubicación y línea completa.
 
-Marca **Solo contenido** para encontrar únicamente direcciones escritas dentro del mensaje. La palabra y la dirección pueden estar en líneas distintas del mismo paquete. Buscar una palabra no identifica automáticamente al fabricante del equipo.
+Marca **Solo contenido** para encontrar direcciones del contenido, incluidos campos binarios reconocidos como LLDP Management Address. La palabra y la dirección pueden estar en líneas distintas del mismo paquete. Buscar una palabra no identifica automáticamente al fabricante del equipo.
 
 ## Prerrequisitos y descargas oficiales
 
@@ -62,17 +62,26 @@ La captura de una NIC depende de que Npcap permita abrirla. Loopback usa NPF_Loo
 
 - Retiene **10 000 paquetes**; la tabla muestra las últimas **2 000 coincidencias** y exporta todas las coincidencias retenidas.
 - La cola tiene **5 000 eventos**; bajo carga puede descartar paquetes. No es una auditoría sin pérdidas ni una captura continua en disco.
-- Decodifica Ethernet, VLAN, ARP, IPv4, IPv6 básico, TCP, UDP, ICMP, DNS/mDNS básico y cabecera MBAP/función de Modbus TCP presentes en cada paquete.
-- No reconstruye flujos TCP, no reensambla fragmentos IP ni descifra TLS. IPv6 con extensiones conserva los bytes sin interpretar el transporte.
+- Motor propio para Ethernet/VLAN, ARP/NDP, IPv4/IPv6 y transporte, LLDP, PROFINET DCP, CDP, EtherNet/IP, DNS/mDNS/LLMNR, DHCP/BOOTP/DHCPv6, SNMP, Modbus TCP, S7/COTP, BACnet/IP, OPC UA, MQTT y HTTP/SSDP. El alcance varía por protocolo: consulta la [cobertura y límites](docs/protocolos-y-limites.md).
+- Reensambla IPv4 y mensajes TCP de protocolos seleccionados con límites de memoria y tiempo. No reensambla fragmentos IPv6 ni descifra TLS/QUIC o protocolos industriales cifrados.
 - Pausar visor congela la vista, pero la adquisición sigue y el historial continúa rotando.
 
-El chat de desarrollo registra **13 pruebas aprobadas** para V1.0.2. No se garantiza captura en todos los modelos de adaptador; consulta el [alcance completo](docs/limitaciones-y-problemas.md).
+No se garantiza captura en todos los modelos de adaptador; consulta el [alcance completo](docs/limitaciones-y-problemas.md).
+
+## Novedades de V1.1.1
+
+- Doble clic abre una ventana grande con minimizar, maximizar y cerrar; también admite Escape.
+- El detalle conserva desplazamiento, selección de texto y bloque mientras llegan paquetes.
+- El paquete inspeccionado permanece disponible aunque salga de la retención o del filtro, hasta seleccionar otro o limpiar.
+- Dispositivos inicialmente contraídos y categoría virtual cerrada, sin limitar la detección.
 
 ## Paquete oficial
 
+La [descarga directa estable](https://github.com/DyscoEP/nic-analyzer/releases/latest/download/NIC-Analyzer-Windows-x64.zip) apunta a la última Release estable que conserve ese nombre de archivo. Verifica su integridad con [SHA256SUMS](https://github.com/DyscoEP/nic-analyzer/releases/latest/download/NIC-Analyzer-SHA256SUMS.txt).
+
 El ZIP contiene exactamente `NIC-Analyzer.exe`, `LEEME.txt`, `LICENSE.txt` y `THIRD-PARTY-NOTICES.txt`. Los tres textos se conservan aquí con el mismo contenido que dentro del paquete.
 
-[Releases y descarga oficial](https://github.com/DyscoEP/nic-analyzer/releases/tag/v1.0.2) · [Historial](CHANGELOG.md)
+[Releases y descarga oficial](https://github.com/DyscoEP/nic-analyzer/releases/latest) · [Historial](CHANGELOG.md)
 
 **Code → Download ZIP** y los archivos automáticos **Source code** de GitHub contienen la documentación; el programa es el ZIP portable adjunto a la Release.
 

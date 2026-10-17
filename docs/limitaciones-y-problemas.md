@@ -8,15 +8,15 @@ NIC virtual, Bluetooth o celular depende del acceso de Npcap. No hay captura dir
 
 ## No encuentro texto o direcciones
 
-El filtro IP origen/destino busca solo las direcciones de extremos. Para texto usa Buscar texto en paquetes. Todos los filtros se combinan: prueba Quitar filtros y después aplica solo los necesarios.
+El filtro IP de cabecera / anunciada busca extremos y campos de direcciones reconocidos. Para texto usa Buscar texto en paquetes. Todos los filtros se combinan: prueba Quitar filtros y después aplica solo los necesarios.
 
-La detección encuentra direcciones reales de las cabeceras y las escritas como texto en el contenido. Solo contenido elimina las primeras. La palabra y la dirección deben aparecer en el mismo paquete, aunque pueden estar en líneas distintas.
+La detección encuentra direcciones reales de las cabeceras y las de campos binarios reconocidos o escritas como texto en el contenido. Solo contenido elimina las primeras. La palabra y la dirección deben aparecer en el mismo paquete, aunque pueden estar en líneas distintas.
 
-No descifra TLS ni reconstruye texto dividido entre paquetes. No deduce fabricantes ausentes del contenido ni IP binarias de protocolos sin decodificador. IPv6 con extensiones conserva bytes sin interpretar el transporte.
+Reensambla IPv4 y mensajes TCP de protocolos seleccionados con límites explícitos; consulta [la cobertura](protocolos-y-limites.md). No descifra TLS/QUIC ni protocolos industriales cifrados, no reensambla HTTP ni fragmentos IPv6. No deduce fabricantes ausentes ni IP binarias de protocolos sin lector propio. Capturas incompletas, puertos no habituales y pérdidas pueden impedir la decodificación.
 
 ## Paquetes perdidos o filas ausentes
 
-Se retienen hasta 10000 paquetes; se retiran los más antiguos al alcanzar el límite. La cola de adquisición admite 5000 eventos y puede descartar bajo carga. El contador informa descartes. No hay adquisición sin pérdidas ni captura continua en disco.
+Se retienen hasta 10000 paquetes físicos más un paquete inspeccionado adicional; se retiran los más antiguos al alcanzar el límite. La cola de adquisición admite 5000 eventos y puede descartar bajo carga. El contador informa descartes. No hay adquisición sin pérdidas ni captura continua en disco.
 
 La tabla de paquetes y la de direcciones muestran hasta 2000 coincidencias cada una. Exportar incluye todas las coincidencias retenidas. Pausar visor no pausa la captura; el historial puede seguir rotando. Limpiar elimina el contenido retenido y deja activa la captura si lo estaba.
 

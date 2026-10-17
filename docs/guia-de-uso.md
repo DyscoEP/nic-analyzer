@@ -1,4 +1,4 @@
-# Guía de uso · V1.0.2
+# Guía de uso · V1.1.1
 
 El [LEEME](../LEEME.txt) contiene las instrucciones y límites completos del portable.
 
@@ -12,9 +12,9 @@ Guardar interfaz conserva si esa NIC está incluida. Iniciar general actúa sobr
 
 ## Inspección y búsqueda
 
-Selecciona un paquete para ver cabeceras y carga útil. Seleccionar un bloque copia su contenido. Copiar línea copia los datos de la fila; doble clic en un paquete o bloque abre pantalla completa. Regresar o Escape vuelve a la vista anterior.
+Selecciona un paquete para ver cabeceras y carga útil. Seleccionar un bloque copia su contenido. Copiar línea copia los datos de la fila; doble clic en un paquete o bloque abre una ventana grande independiente. Cerrar ventana, la X de Windows o Escape la cierra sin detener la captura. El detalle conserva scroll, selección y bloque al recibir paquetes; el paquete inspeccionado permanece disponible aunque salga de la retención o filtro, hasta seleccionar otro o limpiar.
 
-**Filtrar IP origen/destino** busca coincidencias parciales en las direcciones de los extremos. **Buscar texto en paquetes** busca texto decodificado y bytes completos, sin distinguir mayúsculas, incluido ASCII en UTF-16 LE/BE.
+**IP de cabecera / anunciada** busca coincidencias parciales en los extremos y direcciones de campos reconocidos. **Buscar texto en paquetes** busca texto decodificado y bytes completos, sin distinguir mayúsculas, incluido ASCII en UTF-16 LE/BE.
 
 Combina búsqueda con filtros de protocolo, NIC y opciones de ruido. IP del equipo oculta todo tráfico con una IP local en cualquier extremo; no identifica procesos ni distingue tráfico útil de ruido.
 
@@ -22,7 +22,7 @@ Combina búsqueda con filtros de protocolo, NIC y opciones de ruido. IP del equi
 
 Escribe una palabra, como siemens, y marca Detectar IP o Detectar MAC. Si marcas ambas se acepta cualquiera de los dos tipos. Solo se muestran paquetes que coinciden también con los demás filtros.
 
-La vista reúne direcciones de las cabeceras y las escritas en el contenido completo. **Solo contenido** excluye las cabeceras. La palabra y dirección pueden aparecer en líneas diferentes del mismo paquete.
+La vista reúne direcciones de las cabeceras y las de campos binarios reconocidos o escritas en el contenido completo. **Solo contenido** excluye las cabeceras Ethernet/IP; conserva campos como LLDP Management Address o direcciones de DCP. No necesitas que la IP esté escrita como texto ASCII. La palabra y dirección pueden aparecer en líneas diferentes del mismo paquete.
 
 Se validan IPv4/IPv6 y MAC con dos puntos, guiones o formato Cisco. No se convierten bytes arbitrarios en direcciones. Seleccionar una fila copia sus datos y línea. Doble clic abre el paquete cuando está entre las 2000 filas de la tabla superior.
 
@@ -37,3 +37,7 @@ Exportar paquetes guarda las coincidencias a PCAP, CSV o texto. Si hay tipos de 
 Archivo → Guardar conserva filtros, NIC incluidas y detección en .nica; no guarda los paquetes. El proyecto acepta configuraciones anteriores.
 
 Minimizar conserva la app en bandeja; el icono permite restaurar, iniciar/detener general y salir. Ver permite desactivar esa preferencia. Ayuda → Acerca de muestra identidad, versión y licencia MIT.
+
+## Decodificación
+
+Consulta [Protocolos y límites](protocolos-y-limites.md) para el alcance de cada lector. Los campos de mensajes reensamblados aparecen en el paquete que completa el mensaje. PCAP conserva las tramas físicas y añade los segmentos/fragmentos necesarios para las coincidencias, sin fabricar paquetes.

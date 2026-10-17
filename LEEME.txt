@@ -1,4 +1,4 @@
-NIC Analyzer V1.0.2 · compilación 1.2 · Windows x64
+NIC Analyzer V1.1.1 · compilación 2.1 · Windows x64
 Dysco Exploration and Production
 Field Tools / cloudLOGGER SCADA
 https://cloudloggerscada.com
@@ -6,6 +6,7 @@ https://cloudloggerscada.com
 INICIO
 Extrae el ZIP y ejecuta NIC-Analyzer.exe. No requiere Python ni carpetas
 externas de iconos. La detección comienza automáticamente; no inicia captura.
+No requiere TShark ni Wireshark.
 La captura requiere Npcap instalado por separado: https://npcap.com
 Si Npcap tiene activado el modo exclusivo de administrador, ejecuta
 NIC-Analyzer.exe como administrador. No se redistribuye ni instala Npcap.
@@ -26,8 +27,8 @@ USO
 5. Selecciona un paquete para ver Ethernet, VLAN, IP, transporte y carga útil.
    Selecciona un bloque para copiarlo al portapapeles. Copiar línea copia
    hora, nivel, NIC, protocolo, extremos, longitud y resumen.
-   Doble clic sobre un paquete o bloque abre el analizador en pantalla completa.
-   Usa Regresar o Escape para volver.
+   Doble clic sobre un paquete o bloque abre el analizador en una ventana grande independiente.
+   Usa Cerrar ventana, la X de Windows o Escape para volver.
 6. El campo IP busca por coincidencia parcial en IP origen/destino.
    Hay filtros TCP, UDP, Modbus TCP, ARP e ICMP/ping.
    Marca Ocultar DNS/mDNS, Broadcast/multicast o SSDP/DHCP para quitar ruido.
@@ -47,67 +48,134 @@ USO
 10. Ayuda > Acerca de muestra identidad, versión y licencia MIT completa.
 
 CAPACIDAD Y LIMITACIONES
-Se retienen hasta 10 000 paquetes en memoria. Al alcanzar el límite se retiran
-los más antiguos y se informa el total descartado. La tabla muestra las últimas
-2 000 coincidencias de más nuevo a más viejo, con el más nuevo arriba; exportar incluye todas las coincidencias retenidas.
-La cola de adquisición está limitada a 5 000 eventos. Bajo tráfico intenso
-puede descartar paquetes adicionales; se suman al contador de descartes.
-No se realiza una captura continua en disco ni una auditoría sin pérdidas.
-Limpiar elimina los paquetes retenidos; la captura continúa si estaba activa.
-El proyecto .nica conserva filtros y NIC incluidas, no los paquetes.
-La captura de NIC virtuales/Bluetooth/celular depende de que Npcap permita
-abrir ese adaptador. No captura Bluetooth HCI ni módems serie directamente.
-Wi-Fi se analiza como tráfico de red entregado por el controlador, sin modo
-monitor 802.11. Loopback usa el dispositivo NPF_Loopback de Npcap.
-Se decodifican Ethernet, VLAN, ARP, IPv4, IPv6 básico, TCP, UDP, ICMP,
-DNS/mDNS básico y cabecera MBAP/función de Modbus TCP cuando están en el paquete.
-No hay reconstrucción TCP, descifrado TLS, fragmentación IP reensamblada ni
-análisis completo de protocolos. IPv6 con extensiones conserva los bytes
-sin interpretar la cabecera de transporte. Los bytes crudos siguen disponibles.
+Se retienen hasta 10 000 paquetes físicos. La tabla muestra las últimas
+2 000 coincidencias; se exportan todas las coincidencias retenidas.
+La cola de adquisición admite 5 000 eventos. Se contabilizan los descartes
+por cola llena y al retirar paquetes antiguos. No es captura sin pérdidas.
+Los proyectos .nica conservan configuración y filtros; PCAP conserva tramas.
+La exportación PCAP conserva los paquetes físicos originales e incluye los
+segmentos/fragmentos necesarios para los mensajes que coinciden con el filtro. Importar PCAP (hasta 10 000 tramas físicas por archivo)
+vuelve a decodificar y reensamblar en orden; no inserta paquetes artificiales.
+Los campos reensamblados se muestran en el paquete que completa el mensaje.
+Su ubicación se etiqueta como contenido reensamblado; los bytes raw del
+paquete seleccionado siguen siendo su trama física, no el mensaje combinado.
+La captura Bluetooth/celular depende del soporte de Npcap para la NIC.
+No hay captura Bluetooth HCI, módem serie ni modo monitor Wi-Fi 802.11.
 
-LICENCIAS
-LICENSE.txt contiene la licencia MIT del código propio, cuyo titular es
-Dysco Exploration and Production. THIRD-PARTY-NOTICES.txt integra los textos
-completos de los componentes redistribuidos. Npcap es un requisito externo
-con su propia licencia; MIT no implica respaldo ni afiliación de terceros.
+DETECCIÓN DE IP / MAC Y BÚSQUEDA
+Buscar texto en paquetes consulta campos decodificados, payload y bytes
+capturados. Ejemplo: siemens encuentra SIEMENS en texto o campos reconocidos.
+Detectar IP / Detectar MAC exige que el mismo paquete (o mensaje reensamblado)
+contenga al menos una dirección del tipo elegido. Con ambas opciones basta
+IP O MAC. Solo contenido excluye IP/MAC de cabeceras Ethernet/IP; conserva
+campos binarios reconocidos dentro de LLDP, DCP, DNS, EtherNet/IP, etc.
+La palabra y la dirección pueden estar en líneas diferentes del mensaje.
+IP de cabecera / anunciada consulta extremos y campos binarios reconocidos.
+La pestaña inferior muestra dirección, protocolo/campo, ubicación y línea.
+Seleccionar una fila copia sus datos; Copiar línea es la acción explícita.
+Doble clic abre el detalle del paquete dentro de las 2000 filas mostradas.
+Exportar direcciones produce CSV de todas las coincidencias retenidas.
+La tabla inferior muestra hasta 2000 filas. Las direcciones escritas como texto
+se validan como IPv4/IPv6 o MAC con dos puntos, guiones o formato Cisco.
+No se transforman bytes aleatorios en direcciones. Las máscaras, gateways,
+prefijos y direcciones nulas se conservan con su etiqueta; no se presentan
+como prueba de la IP utilizable ni de la accesibilidad del equipo.
+Quitar filtros desactiva detección. No inicia ni detiene la adquisición.
 
-ACTUALIZACIÓN 1.0.1
-Barra superior compacta con iconos y tooltips, como Modbus Audit.
-Seguir contenido mantiene arriba los paquetes más recientes sin cambiar el
-paquete seleccionado para inspección. Desmárcalo para explorar la lista.
-Filtrar IP origen/destino solo busca direcciones IP. Buscar texto en paquetes
-busca contenido decodificado y los bytes completos capturados, sin distinguir
-mayúsculas. Ejemplo: siemens encuentra SIEMENS aunque esté más allá de la
-vista previa o cruce una línea del visor hexadecimal. También admite texto
-UTF-16 ASCII (LE/BE). No descifra TLS ni reconstruye palabras repartidas
-entre varios paquetes; no deduce fabricantes que no aparecen en el contenido.
-Los filtros de IP, texto, protocolo, NIC y ruido se aplican conjuntamente.
+MOTOR PROPIO Y COBERTURA
+Los lectores de NIC Analyzer son código propio bajo MIT. TShark se utiliza
+únicamente como herramienta independiente durante las pruebas comparativas;
+no se ejecuta, enlaza, importa ni distribuye con el programa.
+Ayuda > Protocolos y límites del motor propio muestra este alcance:
 
-ACTUALIZACIÓN 1.0.2: DETECCIÓN DE DIRECCIONES
-En el analizador escribe la palabra (por ejemplo siemens) y marca Detectar IP
- o Detectar MAC. Solo quedan los paquetes que coinciden con la búsqueda y
-contienen al menos una dirección del tipo elegido. Si marcas ambas opciones,
-se admite IP O MAC. Los filtros anteriores también siguen aplicándose.
-La pestaña IP / MAC detectadas reúne las direcciones de TODOS los paquetes
-que coinciden con los filtros, de más nuevo a más viejo, con hora, NIC, tipo,
-dirección, ubicación y línea completa en la que aparece.
-Por defecto incluye las direcciones de las cabeceras IP y Ethernet, además
- de las escritas como texto en la carga útil completa (no solo su vista previa).
-Marca Solo contenido para excluir las cabeceras y buscar únicamente las IP/MAC
-escritas dentro del mensaje. La palabra y la dirección pueden estar en líneas
- distintas del mismo paquete; no se requiere que estén en la misma línea.
-Se valida IPv4/IPv6 y se admiten MAC con dos puntos, guiones o formato Cisco
-0000.0000.0000. Se escanea texto UTF-8 y texto ASCII codificado en UTF-16 LE/BE.
-No se convierten bytes arbitrarios en IP o MAC, ni se descifra tráfico cifrado
- ni se reconstruyen mensajes que estén divididos entre varios paquetes.
-Las direcciones IP binarias contenidas en protocolos sin decodificador no
- se deducen automáticamente. Cabeceras IP/Ethernet sí usan sus campos reales.
-Seleccionar una fila copia todos sus datos y la línea al portapapeles;
-Copiar línea también copia la fila seleccionada de la pestaña detectada.
-Doble clic abre el detalle del paquete si está dentro de las 2000 filas
-mostradas en la tabla superior. Puedes volver a la pestaña de detecciones.
-Exportar direcciones guarda CSV con TODAS las coincidencias retenidas;
-la vista inferior muestra hasta 2000 filas e indica cuando alcanza el límite.
-Exportar paquetes conserva su función de exportar los paquetes filtrados.
-Quitar filtros desactiva también la detección. El proyecto guarda búsqueda,
-detección y Solo contenido, y acepta proyectos de versiones anteriores.
+LLDP — Campos TLV
+Management Address IPv4/IPv6, Chassis/Port ID, PROFINET Chassis MAC, TTL y descripciones. TLV organizacionales desconocidos quedan en hexadecimal.
+
+PROFINET DCP — Bloques de descubrimiento
+Identify/Get/Set/Hello: IP, máscara, gateway, MAC, tipo de dispositivo, nombre, vendor/device ID y rol. Solo interpreta tráfico observado; no envía DCP.
+
+PROFINET RT — Cabecera
+Frame ID y bytes. No decodifica datos cíclicos ni IRT.
+
+CDP — Campos TLV
+Device ID, plataforma, software, puerto, direcciones de red/administración, capacidades y VLAN. Requiere LLC/SNAP Cisco sobre Ethernet 802.3.
+
+EtherNet/IP — ListIdentity y CPF/CIP parcial
+Socket IPv4, fabricante ID (Rockwell ID 1), tipo, producto, revisión, serial y nombre en ListIdentity. RegisterSession, ListServices, CPF sockets, servicios CIP y ruta class/instance/attribute. Datos de respuesta CIP sin contexto de objeto permanecen hex; no interpreta todo CIP ni I/O implícita.
+
+DNS / mDNS / LLMNR — Preguntas y RR
+Nombres comprimidos, A, AAAA, PTR, CNAME, NS, SRV, TXT y MX; respuestas/autoridad/adicionales. Registros desconocidos quedan hex. DNS TCP admite mensajes reensamblados.
+
+DHCP / BOOTP — Cabecera y opciones seleccionadas
+IP cliente/asignada/servidor/relay, MAC, máscara, router, DNS, NTP, dirección solicitada, hostname, vendor class, cliente y opciones overload. No interpreta todas las opciones propietarias.
+
+DHCPv6 — Opciones seleccionadas
+DUID MAC, IA_NA/IA_TA, IAADDR, IA_PD/IAPREFIX, DNS, servidor unicast y relay. No interpreta todas las opciones de fabricantes.
+
+ARP / NDP — Direcciones y anuncios
+ARP sender/target MAC e IPv4. NDP target/redirect, MAC origen/destino, prefijos, DNS RDNSS y MTU. IPv6 con extensiones básicas; fragmentos IPv6 no se reensamblan.
+
+SNMP — BER v1/v2c parcial
+OID, enteros, cadenas, IpAddress e ifPhysAddress con OID reconocido. No interpreta todas las MIB ni descifra SNMPv3; sus campos cifrados permanecen hex.
+
+Modbus TCP — MBAP y PDU seleccionadas
+FC 1-6, 15, 16, excepciones y FC43/MEI14 Device Identification. Dirección, cantidad, registros o identificación cuando la estructura lo permite. Otras funciones quedan hex; respuesta se identifica por puerto origen 502.
+
+S7comm / COTP — Cabeceras y negociación
+TPKT/COTP, ROSCTR, referencia PDU, función, errores y Setup Communication. SZL, variables, S7CommPlus y cifrado no se interpretan.
+
+BACnet/IP — BVLC/NPDU e I-Am
+Origen de Forwarded NPDU, redes BACnet, APDU y anuncio I-Am (instancia, vendor ID, max APDU, segmentación). No interpreta todos los servicios BACnet ni BACnet/SC.
+
+OPC UA — Transporte UA-TCP
+HEL/ACK/ERR: versión, buffers, límites, endpoint y errores. OPN/MSG/CLO: cabecera/canal y cuerpo hexadecimal. No interpreta servicios binarios ni descifra SecureConversation.
+
+MQTT — Campos 3.1/3.1.1 seleccionados
+CONNECT, Client ID, flags, keepalive, usuario, Will, PUBLISH topic y payload, IDs/ACK. Propiedades MQTT5 no separadas; otros cuerpos quedan hex. No descifra MQTT/TLS.
+
+HTTP / SSDP — Cabeceras de texto
+Start line, cabeceras, Server, Location, Host y direcciones literales. No descifra HTTPS/QUIC ni interpreta todos los cuerpos, XML, compresión o HTTP/2.
+
+Reensamblado — Con límites explícitos
+IPv4 sin superposición: 64 datagramas, hasta 65535 bytes por datagrama y 30 s de espera. TCP para DNS, Modbus, EtherNet/IP, S7, OPC UA y MQTT: 64 flujos, 256 KiB por flujo y 30 s. Admite segmentos fuera de orden después del inicio observado. No recupera bytes no capturados ni aplica heurísticas a protocolos desconocidos; no reensambla HTTP ni mensajes IPv6 fragmentados.
+
+Integridad — Análisis pasivo
+Valida tamaños y límites; no valida todos los checksums, firmas ni autenticidad del emisor. Los campos son anuncios observados, no prueba de alcance, fabricante auténtico ni control del equipo.
+
+PUERTOS Y REENSAMBLADO
+Se reconocen EtherType/LLC o puertos habituales: DNS 53, mDNS 5353, LLMNR 5355,
+DHCP 67/68, DHCPv6 546/547, SNMP 161/162, Modbus TCP 502, S7/COTP 102,
+EtherNet/IP 44818, BACnet/IP 47808, OPC UA TCP 4840, MQTT 1883 y SSDP 1900.
+HTTP se reconoce por su línea inicial de texto. Servicios sobre otros puertos
+pueden quedar sin identificar. No se adivinan objetos ni esquemas propietarios.
+Una respuesta CIP sin contexto de objeto no se convierte en IP a ciegas.
+Para ver nombres/modelos es necesario capturar los mensajes que los contienen;
+no se consultan ni escanean equipos activamente. El programa no envía comandos
+DCP Set, escrituras CIP/Modbus/S7 ni cambios de configuración.
+La falta de bytes, el inicio de captura a mitad de una conversación, pérdidas,
+puertos distintos o cifrado pueden impedir la interpretación. Los bytes quedan
+visibles aunque el protocolo o servicio aún no tenga lector propio.
+No se descifran TLS, QUIC, SNMPv3 cifrado, S7 seguro ni OPC UA cifrado.
+
+EXPLORADOR, IDENTIDAD Y LICENCIAS
+NIC físicas visible, dispositivos contraídos, virtuales cerrado al detectar.
+Inventario CIM de Windows con alternativa .NET; esta última indica clase
+estimada cuando no puede confirmar hardware físico o virtual.
+La identidad, splash, Acerca de y recursos se incluyen en NIC-Analyzer.exe.
+LICENSE.txt contiene MIT del código propio: Dysco Exploration and Production.
+THIRD-PARTY-NOTICES.txt integra licencias de los componentes redistribuidos.
+Npcap se instala aparte y conserva su propia licencia.
+
+ACTUALIZACIÓN 1.1.1: VENTANA Y LECTURA ESTABLE
+Doble clic en paquete/bloque o Ampliar analizador abre una ventana secundaria
+normal, inicialmente grande, con título y botones de minimizar/maximizar/cerrar.
+La adquisición continúa al cerrarla. Cerrar ventana, la X y Escape regresan
+ a la ventana principal. No se maximiza automáticamente al abrir.
+El detalle conserva desplazamiento horizontal/vertical, selección de texto
+ y bloque seleccionado al recibir paquetes. Seguir contenido mantiene al día
+la lista superior sin cambiar el paquete que se está leyendo abajo.
+El paquete inspeccionado permanece disponible aunque su fila salga del límite
+ de retención o quede fuera del filtro; se conserva solo ese paquete adicional.
+Seleccionar otro paquete o cambiar de formato actualiza el detalle. Limpiar
+retira también el paquete conservado. La ventana ampliada mantiene su propia
+posición de lectura y al abrir toma la posición de la ventana principal.

@@ -1,4 +1,4 @@
-NIC Analyzer V1.0.2 · compilación 1.2
+NIC Analyzer V1.1.1 · compilación 2.1
 Dysco Exploration and Production
 
 MIT aplica al código propio. Los componentes redistribuidos conservan las licencias siguientes.
@@ -1912,3 +1912,9 @@ Government shall have only "Restricted Rights" as defined in Clause
 authors grant the U.S. Government and others acting in its behalf
 permission to use and distribute the software in accordance with the
 terms specified in this license.
+
+
+Los lectores de protocolo y reensamblado de NIC Analyzer son implementaciones
+propias cubiertas por LICENSE.txt. Wireshark/TShark solo se utilizó como
+herramienta externa de comparación durante desarrollo; no se distribuyen
+sus binarios, bibliotecas ni código de decodificadores en este paquete.
